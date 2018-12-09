@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t local/dpdk:17.11.4-onbuild ./
+docker build -t shrewdthingsltd/docker-dpdk:dpdk-17.11.4 ./
 
