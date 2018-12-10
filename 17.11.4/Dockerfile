@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 ARG IMG_SRC_DIR=/usr/src
 ARG IMG_DPDK_PFX=dpdk-stable
-ARG IMG_DPDK_VERSION=17.11.4
+ARG IMG_DPDK_VERSION=v17.11-rc4
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc \
@@ -13,8 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-get update && apt-get install -y apt-utils
 RUN apt-get install -y libnuma1 libnuma-dev git
 
-ENV DPDK_VERSION=$IMG_DPDK_VERSION \
-    DPDK_DIR=$IMG_SRC_DIR/dpdk
+ENV DPDK_DIR=$IMG_SRC_DIR/dpdk
 
 WORKDIR $IMG_SRC_DIR
 RUN git clone git://dpdk.org/dpdk -b $IMG_DPDK_VERSION
