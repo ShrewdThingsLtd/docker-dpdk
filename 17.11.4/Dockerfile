@@ -35,7 +35,7 @@ ONBUILD COPY dpdk_config.sh ${DPDK_DIR}/
 
 WORKDIR $DPDK_DIR
 ONBUILD RUN \
-  . ${DPDK_DIR}/dpdk_env.sh; \
-  . ${DPDK_DIR}/dpdk_config.sh; \
-  make install T=${DPDK_TARGET} DESTDIR=install -j20
+	. ${DPDK_DIR}/dpdk_env.sh; \
+	. ${DPDK_DIR}/dpdk_config.sh; \
+	make install T=${DPDK_TARGET} DESTDIR=install -j20
 #ONBUILD RUN make clean
