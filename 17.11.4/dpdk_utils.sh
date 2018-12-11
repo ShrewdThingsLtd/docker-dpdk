@@ -2,6 +2,8 @@
 
 set -x
 
+. ${IMG_SRC_DIR}/exec_utils.sh
+
 dpdk_clone() {
 
 	local SRC_DIR=$1
@@ -36,10 +38,26 @@ dpdk_build() {
 	local DPDK_DIR=$1
 	local DPDK_TARGET=$2
 
-	pushd ${DPDK_DIR}
+	cd ${DPDK_DIR}
 	export DPDK_BUILD=$DPDK_DIR/$DPDK_TARGET
 	make install T=${DPDK_TARGET} DESTDIR=install -j20
-	popd
+	cd -
+}
+
+dpdk_remote_install() {
+
+	local SRC_DIR=$1
+	local DPDK_REPO=$2
+	local DPDK_VERSION=$3
+	local DPDK_TARGET=$4
+	local SCRIPTS_DIR=$5
+	
+	local exec_cmd="\
+		. $SCRIPTS_DIR/dpdk_utils.sh;\
+		dpdk_clone $SRC_DIR $DPDK_REPO $DPDK_VERSION;\
+		dpdk_build $SRC_DIR/dpdk $DPDK_TARGET"
+	echo "dpdk_remote_install: ${exec_cmd}"
+	exec_remote "${SRC_DIR}" "${exec_cmd}" "${TGT_IP}" "${TGT_USER}" "${TGT_PASS}"
 }
 
 set +x
