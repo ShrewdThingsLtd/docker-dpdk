@@ -2,7 +2,7 @@
 
 set -x
 
-. ${IMG_SRC_DIR}/exec_utils.sh
+. ${SRC_DIR}/exec_utils.sh
 
 dpdk_clone() {
 
@@ -53,7 +53,7 @@ dpdk_remote_install() {
 	local SCRIPTS_DIR=$5
 	
 	local exec_cmd="\
-		. $SCRIPTS_DIR/dpdk_utils.sh;\
+		source $SCRIPTS_DIR/dpdk_utils.sh;\
 		dpdk_clone $SRC_DIR $DPDK_REPO $DPDK_VERSION;\
 		dpdk_build $SRC_DIR/dpdk $DPDK_TARGET"
 	echo "dpdk_remote_install: ${exec_cmd}"
