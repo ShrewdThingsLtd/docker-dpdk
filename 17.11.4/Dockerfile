@@ -3,6 +3,8 @@ FROM ubuntu:latest
 ARG IMG_SRC_DIR=/usr/src
 ARG IMG_DPDK_PFX=dpdk-stable
 ARG IMG_DPDK_VERSION=v17.11-rc4
+#ARG IMG_DPDK_REPO=git://dpdk.org/dpdk
+ARG IMG_DPDK_REPO=https://github.com/ShrewdThingsLtd/dpdk.git
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc \
@@ -16,7 +18,7 @@ RUN apt-get install -y libnuma1 libnuma-dev git
 ENV DPDK_DIR=$IMG_SRC_DIR/dpdk
 
 WORKDIR $IMG_SRC_DIR
-RUN git clone git://dpdk.org/dpdk -b $IMG_DPDK_VERSION
+RUN git clone $IMG_DPDK_REPO -b $IMG_DPDK_VERSION
 
 # don't build kernel modules
 RUN sed -i s/CONFIG_RTE_EAL_IGB_UIO=y/CONFIG_RTE_EAL_IGB_UIO=n/ ${DPDK_DIR}/config/common_linuxapp \
