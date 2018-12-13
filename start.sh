@@ -3,12 +3,6 @@
 DPDK_IMG=${1:-local}
 DPDK_VERSION=${2:-v17.11-rc4}
 
-if [ ! -d "./$DPDK_VERSION" ]
-then
-	echo "unsupported DPDK_VERSION: $DPDK_VERSION"
-	exit -1
-fi
-
 docker volume rm $(docker volume ls -qf dangling=true)
 #docker network rm $(docker network ls | grep "bridge" | awk '/ / { print $1 }')
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
