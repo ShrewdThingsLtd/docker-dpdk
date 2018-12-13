@@ -2,27 +2,33 @@
 
 set -x
 
-. ${SRC_DIR}/exec_utils.sh
+dpdk_prerequisites() {
+
+echo " \
+gcc \
+make \
+build-essential \
+curl \
+libnuma1 \
+libnuma-dev \
+git \
+"
+}
 
 dpdk_clone() {
 
-	local SRC_DIR=$1
-	local DPDK_REPO=$2
-	local DPDK_VERSION=$3
-
-	cd $SRC_DIR
-	git config --global http.sslVerify false
-	git clone "${DPDK_REPO}"
-	git config --global http.sslVerify true
-	cd -
-	cd $SRC_DIR/dpdk
-	git checkout "${DPDK_VERSION}"
-	cd -
+	git_clone "${SRC_DIR}" "${DPDK_REPO}" "${DPDK_VERSION}"
 }
 
-dpdk_docker_config() {
+dpdk_pull() {
 
-	local DPDK_DIR=$1
+	local_SRC_DIR=$1
+	local_DPDK_VERSION=$3
+
+	git_pull "${local_SRC_DIR}/dpdk" "${local_DPDK_VERSION}"
+}
+
+dpdk_userspace_config() {
 
 	sed -i s/CONFIG_RTE_EAL_IGB_UIO=y/CONFIG_RTE_EAL_IGB_UIO=n/ ${DPDK_DIR}/config/common_linuxapp
 	sed -i s/CONFIG_RTE_LIBRTE_KNI=y/CONFIG_RTE_LIBRTE_KNI=n/ ${DPDK_DIR}/config/common_linuxapp
@@ -35,29 +41,29 @@ dpdk_docker_config() {
 
 dpdk_build() {
 
-	local DPDK_DIR=$1
-	local DPDK_TARGET=$2
+	local_DPDK_DIR=$1
+	local_DPDK_TARGET=$2
 
-	cd ${DPDK_DIR}
-	export DPDK_BUILD=$DPDK_DIR/$DPDK_TARGET
-	make install T=${DPDK_TARGET} DESTDIR=install -j20
+	cd ${local_DPDK_DIR}
+	export DPDK_BUILD=$local_DPDK_DIR/$local_DPDK_TARGET
+	make install T=${local_DPDK_TARGET} DESTDIR=install -j20
 	cd -
 }
 
 dpdk_remote_install() {
 
-	local SRC_DIR=$1
-	local DPDK_REPO=$2
-	local DPDK_VERSION=$3
-	local DPDK_TARGET=$4
-	local SCRIPTS_DIR=$5
+	local_SRC_DIR=$1
+	local_DPDK_REPO=$2
+	local_DPDK_VERSION=$3
+	local_DPDK_TARGET=$4
+	local_SCRIPTS_DIR=$5
 	
-	local exec_cmd="\
-		source $SCRIPTS_DIR/dpdk_utils.sh;\
-		dpdk_clone $SRC_DIR $DPDK_REPO $DPDK_VERSION;\
-		dpdk_build $SRC_DIR/dpdk $DPDK_TARGET"
-	echo "dpdk_remote_install: ${exec_cmd}"
-	exec_remote "${SRC_DIR}" "${exec_cmd}" "${TGT_IP}" "${TGT_USER}" "${TGT_PASS}"
+	local_exec_cmd="\
+		source $local_SCRIPTS_DIR/dpdk_utils.sh;\
+		dpdk_clone $local_SRC_DIR $local_DPDK_REPO $local_DPDK_VERSION;\
+		dpdk_build $local_SRC_DIR/dpdk $local_DPDK_TARGET"
+	echo "dpdk_remote_install: ${local_exec_cmd}"
+	exec_remote "${local_SRC_DIR}" "${local_exec_cmd}" "${TGT_IP}" "${TGT_USER}" "${TGT_PASS}"
 }
 
 set +x
