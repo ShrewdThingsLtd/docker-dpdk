@@ -30,12 +30,9 @@ RUN \
 	dpdk_clone; \
 	dpdk_userspace_config
 
-# set DPDK_TARGET by sourcing dpdk_env.sh, should be in the build dir of the child image
-# must be sourced in beginning of any RUN instruction that needs it
+WORKDIR $DPDK_DIR
 ONBUILD COPY dpdk_env.sh ${DPDK_DIR}/
 ONBUILD COPY dpdk_config.sh ${DPDK_DIR}/
-
-WORKDIR $DPDK_DIR
 ONBUILD RUN \
 	. ${DPDK_DIR}/dpdk_env.sh; \
 	. ${DPDK_DIR}/dpdk_config.sh; \
