@@ -23,16 +23,11 @@ case ${DPDK_IMG} in
 	*)
 	DPDK_IMG=local/docker-dpdk:dpdk-$DPDK_VERSION
 	DPDK_REPO="https://github.com/ShrewdThingsLtd/dpdk.git"
-	rm -rf ./$DPDK_VERSION/utils
-	cp -r ./utils ./$DPDK_VERSION
-	cd ./$DPDK_VERSION
 	docker build \
 		-t $DPDK_IMG \
 		--build-arg IMG_DPDK_REPO=$DPDK_REPO \
 		--build-arg IMG_DPDK_VERSION=$DPDK_VERSION \
 		./
-	cd -
-	rm -rf ./$DPDK_VERSION/utils
 	;;
 esac
 
