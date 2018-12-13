@@ -2,9 +2,6 @@
 
 DPDK_IMG=${1:-local}
 DPDK_VERSION=${2:-v17.11-rc4}
-TGT_IP=${3:-172.17.0.1}
-TGT_USER=${4:-root}
-TGT_PASS=${5:-devops123}
 
 if [ ! -d "./$DPDK_VERSION" ]
 then
@@ -27,9 +24,6 @@ case ${DPDK_IMG} in
 		-t $DPDK_IMG \
 		--build-arg IMG_DPDK_REPO=$DPDK_REPO \
 		--build-arg IMG_DPDK_VERSION=$DPDK_VERSION \
-		--build-arg IMG_TGT_IP=$TGT_IP \
-		--build-arg IMG_TGT_USER=$TGT_USER \
-		--build-arg IMG_TGT_PASS=$TGT_PASS \
 		./
 	cd -
 	rm -rf ./$DPDK_VERSION/utils
