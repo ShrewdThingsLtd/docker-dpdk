@@ -40,7 +40,7 @@ exec_tgt() {
 	local_remote_dir=$1
 	local_remote_cmd=$2
 
-	exec_remote "${remote_dir}" "${remote_cmd}" "${TGT_IP}" "${TGT_USER}" "${TGT_PASS}"
+	exec_remote "${local_remote_dir}" "${local_remote_cmd}" "${TGT_IP}" "${TGT_USER}" "${TGT_PASS}"
 }
 
 exec_apt_update() {

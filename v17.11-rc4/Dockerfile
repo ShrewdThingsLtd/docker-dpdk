@@ -6,7 +6,6 @@ ARG IMG_DPDK_VERSION
 
 ENV DPDK_REPO="${IMG_DPDK_REPO}"
 ENV DPDK_VERSION=$IMG_DPDK_VERSION
-ENV TGT_UTILS_DIR=/root/GITHUB/ST/docker-dpdk/$DPDK_VERSION/utils
 ENV SRC_DIR=/usr/src
 ENV DPDK_DIR=$SRC_DIR/dpdk
 
@@ -31,19 +30,18 @@ RUN \
 	dpdk_userspace_config
 
 WORKDIR $DPDK_DIR
-ONBUILD COPY dpdk_env.sh ${DPDK_DIR}/
-ONBUILD COPY dpdk_config.sh ${DPDK_DIR}/
+ONBUILD COPY utils/*.sh ${SRC_DIR}/utils/
+ONBUILD COPY app_env.sh ${SRC_DIR}/
+ONBUILD COPY app_config.sh ${SRC_DIR}/
 ONBUILD RUN \
-	. ${DPDK_DIR}/dpdk_env.sh; \
-	. ${DPDK_DIR}/dpdk_config.sh; \
+	. ${SRC_DIR}/utils/exec_utils.sh; \
+	. ${SRC_DIR}/utils/dpdk_utils.sh; \
+	. ${SRC_DIR}/app_config.sh; \
+	dpdk_build
+ONBUILD RUN \
 	. ${SRC_DIR}/utils/exec_utils.sh; \
 	. ${SRC_DIR}/utils/git_utils.sh; \
 	. ${SRC_DIR}/utils/dpdk_utils.sh; \
+	. ${SRC_DIR}/app_env.sh; \
 	dpdk_remote_install
-ONBUILD RUN \
-	. ${DPDK_DIR}/dpdk_env.sh; \
-	. ${DPDK_DIR}/dpdk_config.sh; \
-	. ${SRC_DIR}/utils/exec_utils.sh; \
-	. ${SRC_DIR}/utils/dpdk_utils.sh; \
-	dpdk_build
 #ONBUILD RUN make clean

@@ -4,7 +4,7 @@ set -x
 
 dpdk_prerequisites() {
 
-	echo 'gcc make git curl build-essential libnuma1 libnuma-dev'
+	echo 'gcc make git curl build-essential libnuma1 libnuma-dev sshpass'
 }
 
 dpdk_clone() {
@@ -38,14 +38,14 @@ dpdk_build() {
 
 dpdk_remote_install() {
 
-	remote_install_dir=/tmp
+	remote_install_dir="${TGT_SRC_DIR}"
 	remote_install_cmd="\
-		export UTILS_DIR=${TGT_UTILS_DIR}; \
-		export SRC_DIR=\$(pwd); \
+		export SRC_DIR=${TGT_SRC_DIR}; \
 		export DPDK_DIR=\$SRC_DIR/dpdk; \
 		export DPDK_REPO=${DPDK_REPO}; \
 		export DPDK_VERSION=${DPDK_VERSION}; \
 		export DPDK_TARGET=${DPDK_TARGET}; \
+		export UTILS_DIR=\$SRC_DIR/docker-dpdk/utils; \
 		source \$UTILS_DIR/dpdk_utils.sh; \
 		dpdk_clone; \
 		dpdk_build"
