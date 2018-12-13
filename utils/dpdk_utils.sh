@@ -4,8 +4,7 @@ set -x
 
 dpdk_prerequisites() {
 
-	#echo "libnuma1 libnuma-dev"
-	echo 'gcc make git curl build-essential'
+	echo 'gcc make git curl build-essential libnuma1 libnuma-dev'
 }
 
 dpdk_clone() {

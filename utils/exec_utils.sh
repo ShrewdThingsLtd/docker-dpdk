@@ -7,8 +7,7 @@ print_log() {
 	local_log_file="/tmp/img_log.log"
 	local_log_format="\n$(date +"%Y.%m.%d %H:%M:%S") $1"
 	shift
-	#local_log_cmd="printf '${local_log_format}' '$@' >> ${local_log_file}"
-	printf "${local_log_format}" "'$@'"
+	printf "${local_log_format}" "'$@'" >> ${local_log_file}
 }
 
 exec_log() {
