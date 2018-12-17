@@ -33,3 +33,5 @@ ONBUILD RUN . ${SRC_DIR}/app-entrypoint.sh; \
 	dpdk_build; \
 	dpdk_remote_install
 #ONBUILD RUN make clean
+
+COPY runtime/*.sh ${SRC_DIR}/runtime/

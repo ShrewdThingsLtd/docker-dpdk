@@ -45,13 +45,6 @@ dpdk_build() {
 	cd -
 }
 
-dpdk_igb_uio_install() {
-
-	rmmod igb_uio
-	modprobe uio
-	insmod "${DPDK_DIR}/${DPDK_TARGET}/kmod/igb_uio.ko"
-}
-
 dpdk_remote_install() {
 
 	remote_install_dir="${TGT_SRC_DIR}"
@@ -67,8 +60,7 @@ dpdk_remote_install() {
 		source \$UTILS_DIR/dpdk_utils.sh; \
 		dpdk_clone; \
 		dpdk_kni_disable; \
-		dpdk_build; \
-		dpdk_igb_uio_install"
+		dpdk_build"
 	exec_tgt "${remote_install_dir}" "${remote_install_cmd}"
 }
 

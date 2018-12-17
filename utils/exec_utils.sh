@@ -15,9 +15,7 @@ exec_log() {
 	local_exec_cmd="$@"
 	local_exec_result="$($@)"
 	
-	print_log ">> %s\n" "${local_exec_cmd}"
-	print_log "%s\n" "${local_exec_result}"
-	print_log "%s\n" "---"
+	print_log ">> %s\n%s\n%s\n" "${local_exec_cmd}" "${local_exec_result}" "---"
 }
 
 exec_remote() {
@@ -31,9 +29,7 @@ exec_remote() {
 	local_exec_cmd="cd ${local_remote_dir}; ${local_remote_cmd}"
 	local_ssh_cmd="sshpass -p ${local_remote_pass} ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${local_remote_user}@${local_remote_ip} /bin/bash -c '${local_exec_cmd}'"
 	local_ssh_result="$(${local_ssh_cmd})"
-	print_log ">>> %s\n" "${local_ssh_cmd}"
-	print_log "%s\n" "${local_ssh_result}"
-	print_log "%s\n" "---"
+	print_log ">>> %s\n%s\n%s\n" "${local_ssh_cmd}" "${local_ssh_result}" "---"
 }
 
 exec_tgt() {
