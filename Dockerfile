@@ -10,38 +10,26 @@ ENV SRC_DIR=/usr/src
 ENV DPDK_DIR=$SRC_DIR/dpdk
 
 COPY utils/*.sh ${SRC_DIR}/utils/
+COPY env/*.sh ${SRC_DIR}/env/
+COPY app-entrypoint.sh ${SRC_DIR}/
 
-RUN \
-	. ${SRC_DIR}/utils/exec_utils.sh; \
+RUN . ${SRC_DIR}/app-entrypoint.sh; \
 	exec_apt_update
 
-RUN \
-	. ${SRC_DIR}/utils/exec_utils.sh; \
-	. ${SRC_DIR}/utils/git_utils.sh; \
-	. ${SRC_DIR}/utils/dpdk_utils.sh; \
+RUN . ${SRC_DIR}/app-entrypoint.sh; \
 	exec_apt_install "$(dpdk_prerequisites)"
 #RUN exec_apt_clean
 
-RUN \
-	. ${SRC_DIR}/utils/exec_utils.sh; \
-	. ${SRC_DIR}/utils/git_utils.sh; \
-	. ${SRC_DIR}/utils/dpdk_utils.sh; \
+RUN . ${SRC_DIR}/app-entrypoint.sh; \
 	dpdk_clone; \
 	dpdk_userspace_config
 
 WORKDIR $DPDK_DIR
 ONBUILD COPY utils/*.sh ${SRC_DIR}/utils/
-ONBUILD COPY app_env.sh ${SRC_DIR}/
-ONBUILD COPY app_config.sh ${SRC_DIR}/
-ONBUILD RUN \
-	. ${SRC_DIR}/utils/exec_utils.sh; \
-	. ${SRC_DIR}/utils/dpdk_utils.sh; \
-	. ${SRC_DIR}/app_config.sh; \
-	dpdk_build
-ONBUILD RUN \
-	. ${SRC_DIR}/utils/exec_utils.sh; \
-	. ${SRC_DIR}/utils/git_utils.sh; \
-	. ${SRC_DIR}/utils/dpdk_utils.sh; \
-	. ${SRC_DIR}/app_env.sh; \
+ONBUILD COPY env/*.sh ${SRC_DIR}/env/
+
+ONBUILD RUN . ${SRC_DIR}/app-entrypoint.sh; \
+	app_dpdk_configure; \
+	dpdk_build; \
 	dpdk_remote_install
 #ONBUILD RUN make clean
