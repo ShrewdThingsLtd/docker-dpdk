@@ -35,10 +35,16 @@ echo "${remote_install_cmd}"
 
 dpdk_igb_uio_install() {
 
-	sleep 1
-	rmmod igb_uio
-	sleep 1
-	modprobe uio
-	sleep 1
-	insmod "${DPDK_DIR}/${DPDK_TARGET}/kmod/igb_uio.ko"
+	local remote_dir="${TGT_SRC_DIR}"
+##################
+local remote_cmd="\
+sleep 1;\
+rmmod igb_uio;\
+sleep 1;\
+modprobe uio;\
+sleep 1;\
+insmod ${TGT_SRC_DIR}/dpdk/${DPDK_TARGET}/kmod/igb_uio.ko"
+##################
+echo "${remote_cmd}"
+	exec_tgt "${remote_dir}" "${remote_cmd}"
 }
