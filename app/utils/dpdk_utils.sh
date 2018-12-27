@@ -58,6 +58,7 @@ dpdk_remote_install() {
 		source \$UTILS_DIR/exec_utils.sh; \
 		source \$UTILS_DIR/git_utils.sh; \
 		source \$UTILS_DIR/dpdk_utils.sh; \
+		yum -y install numactl-devel; \
 		dpdk_clone; \
 		dpdk_kni_disable; \
 		dpdk_build"

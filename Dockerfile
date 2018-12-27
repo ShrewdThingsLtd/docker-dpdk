@@ -9,18 +9,17 @@ ENV DPDK_VERSION=$IMG_DPDK_VERSION
 ENV SRC_DIR=/usr/src
 ENV DPDK_DIR=$SRC_DIR/dpdk
 
-COPY utils/*.sh ${SRC_DIR}/utils/
-COPY env/*.sh ${SRC_DIR}/env/
-COPY app-entrypoint.sh ${SRC_DIR}/
+COPY app/utils/*.sh ${SRC_DIR}/utils/
+COPY app/env/*.sh ${SRC_DIR}/env/
+COPY app/entrypoint/*.sh ${SRC_DIR}/
+ENV BASH_ENV=${SRC_DIR}/app-entrypoint.sh
+SHELL ["/bin/bash", "-c"]
 
-RUN . ${SRC_DIR}/app-entrypoint.sh; \
-	exec_apt_update
-
-RUN . ${SRC_DIR}/app-entrypoint.sh; \
-	exec_apt_install "$(dpdk_prerequisites)"
+RUN exec_apt_update
+RUN exec_apt_install "$(dpdk_prerequisites)"
 #RUN exec_apt_clean
 
-RUN . ${SRC_DIR}/app-entrypoint.sh; \
+RUN \
 	dpdk_clone; \
 	dpdk_userspace_config
 
@@ -28,10 +27,10 @@ WORKDIR $DPDK_DIR
 ONBUILD COPY utils/*.sh ${SRC_DIR}/utils/
 ONBUILD COPY env/*.sh ${SRC_DIR}/env/
 
-ONBUILD RUN . ${SRC_DIR}/app-entrypoint.sh; \
+ONBUILD RUN \
 	app_dpdk_configure; \
 	dpdk_build; \
 	dpdk_remote_install
 #ONBUILD RUN make clean
 
-COPY runtime/*.sh ${SRC_DIR}/runtime/
+COPY app/runtime/*.sh ${SRC_DIR}/runtime/
