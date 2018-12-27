@@ -9,8 +9,8 @@ ENV DPDK_VERSION=$IMG_DPDK_VERSION
 ENV SRC_DIR=/usr/src
 ENV DPDK_DIR=$SRC_DIR/dpdk
 
-COPY app/utils/*.sh ${SRC_DIR}/utils/
 COPY app/env/*.sh ${SRC_DIR}/env/
+COPY app/utils/*.sh ${SRC_DIR}/utils/
 COPY app/entrypoint/*.sh ${SRC_DIR}/
 ENV BASH_ENV=${SRC_DIR}/app-entrypoint.sh
 SHELL ["/bin/bash", "-c"]
@@ -23,14 +23,15 @@ RUN \
 	dpdk_clone; \
 	dpdk_userspace_config
 
+COPY app/runtime/*.sh ${SRC_DIR}/runtime/
+
 WORKDIR $DPDK_DIR
-ONBUILD COPY utils/*.sh ${SRC_DIR}/utils/
-ONBUILD COPY env/*.sh ${SRC_DIR}/env/
+ONBUILD COPY app/env/*.sh ${SRC_DIR}/env/
+ONBUILD COPY app/utils/*.sh ${SRC_DIR}/utils/
+ONBUILD COPY app/entrypoint/*.sh ${SRC_DIR}/
 
 ONBUILD RUN \
 	app_dpdk_configure; \
 	dpdk_build; \
 	dpdk_remote_install
 #ONBUILD RUN make clean
-
-COPY app/runtime/*.sh ${SRC_DIR}/runtime/
