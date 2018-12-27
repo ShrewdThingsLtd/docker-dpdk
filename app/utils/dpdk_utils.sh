@@ -37,33 +37,5 @@ dpdk_userspace_config() {
 	sed -i s/CONFIG_RTE_TEST_PMD=y/CONFIG_RTE_TEST_PMD=n/ ${DPDK_DIR}/config/common_linuxapp
 }
 
-dpdk_build() {
-
-	cd "${DPDK_DIR}"
-	export DPDK_BUILD="${DPDK_DIR}/${DPDK_TARGET}"
-	make install T="${DPDK_TARGET}" DESTDIR=install -j20
-	cd -
-}
-
-dpdk_remote_install() {
-
-	remote_install_dir="${TGT_SRC_DIR}"
-	remote_install_cmd="\
-		export SRC_DIR=${TGT_SRC_DIR}; \
-		export DPDK_DIR=\$SRC_DIR/dpdk; \
-		export DPDK_REPO=${DPDK_REPO}; \
-		export DPDK_VERSION=${DPDK_VERSION}; \
-		export DPDK_TARGET=${DPDK_TARGET}; \
-		export UTILS_DIR=\$SRC_DIR/docker-dpdk/utils; \
-		source \$UTILS_DIR/exec_utils.sh; \
-		source \$UTILS_DIR/git_utils.sh; \
-		source \$UTILS_DIR/dpdk_utils.sh; \
-		yum -y install numactl-devel; \
-		dpdk_clone; \
-		dpdk_kni_disable; \
-		dpdk_build"
-	exec_tgt "${remote_install_dir}" "${remote_install_cmd}"
-}
-
 set +x
 

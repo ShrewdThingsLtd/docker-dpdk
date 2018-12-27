@@ -4,42 +4,51 @@ set -x
 
 print_log() {
 
-	local_log_file="/tmp/img_log.log"
-	local_log_format="\n$(date +"%Y.%m.%d %H:%M:%S") $1"
+	local log_file="/tmp/img_log.log"
+	local log_format="\n$(date +"%Y.%m.%d %H:%M:%S") $1"
 	shift
-	printf "${local_log_format}" "'$@'" >> ${local_log_file}
+	printf "${log_format}" "$@" >> ${log_file}
 }
 
 exec_log() {
 
-	local_exec_cmd="$@"
-	local_exec_result="$($@)"
-	
-	print_log ">> %s\n%s\n%s\n" "${local_exec_cmd}" "${local_exec_result}" "---"
-	echo "${local_exec_result}"
+	local exec_cmd="$@"
+	local exec_result="$($@)"
+
+	print_log ">> [%s]\n%s\n%s\n" "${exec_cmd}" "${exec_result}" "---"
+	echo "${exec_result}"
 }
 
 exec_remote() {
 
-	local_remote_dir=$1
-	local_remote_cmd=$2
-	local_remote_ip=$3
-	local_remote_user=$4
-	local_remote_pass=$5
+	echo
+	echo "<<<< exec_remote >>>>"
+	echo
+	set +x
+	local remote_dir="$1"
+	local remote_cmd="$2"
+	local remote_ip="$3"
+	local remote_user="$4"
+	local remote_pass="$5"
 
-	local_exec_cmd="cd ${local_remote_dir}; ${local_remote_cmd}"
-	local_ssh_cmd="sshpass -p ${local_remote_pass} ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${local_remote_user}@${local_remote_ip} /bin/bash -c '${local_exec_cmd}'"
-	local_ssh_result="$(${local_ssh_cmd})"
-	print_log ">>> %s\n%s\n%s\n" "${local_ssh_cmd}" "${local_ssh_result}" "---"
-	echo "${local_ssh_result}"
+	local exec_cmd="cd ${remote_dir}; ${remote_cmd}"
+	local ssh_cmd="sshpass -p ${remote_pass} ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${remote_user}@${remote_ip} /bin/bash -c '${exec_cmd}'"
+	local ssh_result="$(${ssh_cmd})"
+	print_log ">>> [%s]\n%s\n%s\n" "${ssh_cmd}" "${ssh_result}" "---"
+	set +x
 }
 
 exec_tgt() {
 
-	local_remote_dir=$1
-	local_remote_cmd=$2
+	echo
+	echo "<<<< exec_tgt >>>>"
+	echo
+	set +x
+	local remote_dir="$1"
+	local remote_cmd="$2"
 
-	echo "$(exec_remote \"${local_remote_dir}\" \"${local_remote_cmd}\" \"${TGT_IP}\" \"${TGT_USER}\" \"${TGT_PASS}\")"
+	exec_remote ${remote_dir} "${remote_cmd}" ${TGT_IP} ${TGT_USER} ${TGT_PASS}
+	set +x
 }
 
 exec_apt_update() {

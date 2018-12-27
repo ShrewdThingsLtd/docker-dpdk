@@ -31,7 +31,7 @@ ONBUILD COPY app/utils/*.sh ${SRC_DIR}/utils/
 ONBUILD COPY app/entrypoint/*.sh ${SRC_DIR}/
 
 ONBUILD RUN \
-	app_dpdk_configure; \
+	dpdk_configure; \
 	dpdk_build; \
 	dpdk_remote_install
 #ONBUILD RUN make clean
